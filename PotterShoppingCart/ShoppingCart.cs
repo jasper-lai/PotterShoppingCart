@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 
 namespace PotterShoppingCart
 {
@@ -16,20 +17,13 @@ namespace PotterShoppingCart
             int booksCnt = 0;   //總共買了幾本書
 
             booksCnt = orders.Sum(x => x.Qty);
+            ICalculator calculator = ShoppingFactory.GetCalculator(booksCnt);
 
-            if (2 == booksCnt)
-            {
-                //2本不同系列, 打9.5折
-                result = (int) Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.95m) ;
-            }
-            else
-            {
-                //不打折的狀況下, 直接用 Linq 處理
-                result = orders.Sum(x => x.Book.Price * x.Qty);
-            }
+            result = calculator.Calc(orders);
             return result;
         }
     }
+
 
     public class Book
     {
@@ -44,6 +38,45 @@ namespace PotterShoppingCart
     {
         public Book Book { get; set; }
         public int Qty { get; set; }
+    }
+
+    public interface ICalculator
+    {
+        int Calc(List<Order> orders);
+    }
+
+    public class CalculatorWithNoDiscount : ICalculator
+    {
+        public int Calc(List<Order> orders)
+        {
+            return orders.Sum(x => x.Book.Price * x.Qty);
+        }
+    }
+
+    public class CalculatorWithDiscount95 : ICalculator
+    {
+        public int Calc(List<Order> orders)
+        {
+            return (int) Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.95m);
+        }
+    }
+
+    public static class ShoppingFactory
+    {
+        public static ICalculator GetCalculator(int booksCnt)
+        {
+            ICalculator result = null;
+            switch (booksCnt)
+            {
+                case 2 :
+                    result = new CalculatorWithDiscount95();
+                    break;
+                default :
+                    result = new CalculatorWithNoDiscount();
+                    break;
+            }
+            return result;
+        }
     }
 
 }
