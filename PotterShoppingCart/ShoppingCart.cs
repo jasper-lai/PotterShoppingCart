@@ -13,8 +13,20 @@ namespace PotterShoppingCart
         public int CalcAmt(List<Order> orders)
         {
             int result = 0;
-            //不打折的狀況下, 直接用 Linq 處理
-            result = orders.Sum(x => x.Book.Price*x.Qty);
+            int booksCnt = 0;   //總共買了幾本書
+
+            booksCnt = orders.Sum(x => x.Qty);
+
+            if (2 == booksCnt)
+            {
+                //2本不同系列, 打9.5折
+                result = (int) Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.95m) ;
+            }
+            else
+            {
+                //不打折的狀況下, 直接用 Linq 處理
+                result = orders.Sum(x => x.Book.Price * x.Qty);
+            }
             return result;
         }
     }

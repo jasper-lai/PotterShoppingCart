@@ -1,0 +1,12 @@
+﻿//檢查是否有重複
+var duplicate = orders.GroupBy(x => x.Book.VolNo,
+    (volno, details) => new
+    {
+        Key = volno,
+        Count = details.Count(),
+        Details = details
+    })
+    .Where(g => g.DetailList.Count() > 1)
+    .ToList();
+
+

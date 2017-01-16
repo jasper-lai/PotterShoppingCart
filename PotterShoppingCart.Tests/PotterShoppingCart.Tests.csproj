@@ -65,6 +65,7 @@
     <Compile Include="ShoppingCartTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CodeBackup.txt" />
     <Content Include="User Story.txt" />
   </ItemGroup>
   <ItemGroup>
