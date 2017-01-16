@@ -77,6 +77,14 @@ namespace PotterShoppingCart
         }
     }
 
+    public class CalculatorWithDiscount75 : ICalculator
+    {
+        public int Calc(List<Order> orders)
+        {
+            return (int)Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.75m);
+        }
+    }
+
     public static class ShoppingFactory
     {
         public static ICalculator GetCalculator(int booksCnt)
@@ -84,6 +92,9 @@ namespace PotterShoppingCart
             ICalculator result = null;
             switch (booksCnt)
             {
+                case 5:
+                    result = new CalculatorWithDiscount75();
+                    break;
                 case 4:
                     result = new CalculatorWithDiscount80();
                     break;
