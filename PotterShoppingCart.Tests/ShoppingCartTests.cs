@@ -200,7 +200,7 @@ namespace PotterShoppingCart.Tests
             List<Order> orders = new List<Order>()
             {
                 new Order { Book = new Book() {VolNo = 1}, Qty = 1},
-                new Order { Book = new Book() {VolNo = 1}, Qty = 3},
+                new Order { Book = new Book() {VolNo = 2}, Qty = 3},
             };
 
             //act
