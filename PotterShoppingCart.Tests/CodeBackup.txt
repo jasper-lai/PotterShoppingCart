@@ -6,7 +6,28 @@ var duplicate = orders.GroupBy(x => x.Book.VolNo,
         Count = details.Count(),
         Details = details
     })
-    .Where(g => g.DetailList.Count() > 1)
+    .Where(g => g.Details.Count() > 1)
     .ToList();
 
+//
+var equalToOne = orders.GroupBy(x => x.Book.VolNo,
+        (volno, details) => new
+        {
+            Key = volno,
+            Count = details.Count(),
+            //Details = details,
+        })
+        .Where(g => g.Count == 1)
+        .ToList();
+booksCntIsOne = equalToOne.Count;
+
+var greaterThanOne = orders.GroupBy(x => x.Book.VolNo,
+        (volno, details) => new
+        {
+            Key = volno,
+            Count = details.Count(),
+            //Details = details
+        })
+        .Where(g => g.Count > 1)
+        .ToList();
 
