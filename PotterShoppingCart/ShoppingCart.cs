@@ -17,7 +17,7 @@ namespace PotterShoppingCart
             {2, new Discount() {Qty = 2, DiscountRate = 0.95m, Amt = (int) Math.Floor(100 * 2 * 0.95m)} },
             {3, new Discount() {Qty = 3, DiscountRate = 0.90m, Amt = (int) Math.Floor(100 * 3 * 0.90m)} },
             {4, new Discount() {Qty = 4, DiscountRate = 0.80m, Amt = (int) Math.Floor(100 * 4 * 0.80m)} },
-            {5, new Discount() {Qty = 4, DiscountRate = 0.75m, Amt = (int) Math.Floor(100 * 5 * 0.75m)} },
+            {5, new Discount() {Qty = 5, DiscountRate = 0.75m, Amt = (int) Math.Floor(100 * 5 * 0.75m)} },
         };
 
         public ShoppingCart()
