@@ -136,6 +136,28 @@ namespace PotterShoppingCart.Tests
 
         }
 
+        [TestMethod]
+        public void Scenario_7_第一集買了一本_第二三集各買了兩本_價格應為460()
+        {
+            //arrange
+            List<Order> orders = new List<Order>()
+            {
+                new Order { Book = new Book() {VolNo = 1}, Qty = 1},
+                new Order { Book = new Book() {VolNo = 2}, Qty = 2},
+                new Order { Book = new Book() {VolNo = 3}, Qty = 2},
+            };
+
+            //act
+            var target = new ShoppingCart();
+            int actual = target.CalcAmt(orders);
+
+            //assert
+            int expected = 460;     // 100*3*0.9 + 100*2*0.95
+            Assert.AreEqual(expected, actual);
+
+        }
+
+
 
     }
 
