@@ -65,7 +65,7 @@ namespace PotterShoppingCart
                 foreach (var order in orders)
                 {
                     //因為經過一輪彙整後, bookCnts 的元素內容, 有可能成為 0
-                    if (bookCnts[i] > 0 )
+                    if (bookCnts[i] > 0)
                     {
                         currentCnt = currentCnt + 1;
                         remainCnt = remainCnt + bookCnts[i] - 1;
@@ -94,23 +94,56 @@ namespace PotterShoppingCart
             return results;
         }
 
+        private bool CheckFinalIsSameVolumn(List<Order> orders)
+        {
+            bool result = false;
+
+            //檢查配對結果的最後一個數字, 是否為 "同一集"
+            var tmpOrders = orders.OrderByDescending(x => x.Qty).ToList();
+
+            //最大值 - 次大值 大於或等於 2, 檢查配對結果的最後一個數字, 是 "同一集" --> 不打折
+            if ((tmpOrders[0].Qty - tmpOrders[1].Qty) >= 2)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
         public int CalcAmt(List<Order> orders)
         {
             int result = 0;
 
-            //booksCnt = orders.Sum(x => x.Qty);
-            //ICalculator calculator = ShoppingFactory.GetCalculator(booksCnt);
-            //result = calculator.Calc(orders);
+            //如果只有1筆訂單項目, 代表沒有打折的可能, 直接回傳結果
+            if (orders.Count == 1)
+            {
+                result = orders.Sum(x => x.Book.Price * x.Qty);
+                return result;
+            }
+
+            //如果大於1筆訂單項目, 才有打折配對的必要
             List<int> pairs = MakePairs(orders);
+            bool isSameVolumn = CheckFinalIsSameVolumn(orders);
+            int i = 0;
+            int pairsCnt = pairs.Count;
             foreach (var pair in pairs)
             {
-                Discount discount = null;
-                //查表取值 (_discounts)
-                if (! _discounts.TryGetValue(pair, out discount))
+                i++;
+                //處理最後一個配對值的狀況
+                if (i == pairsCnt && isSameVolumn)
                 {
-                    throw new ArgumentException("購買數量不在設定的範圍 (1 .. 5)");
+                    result += 100 * pair;
                 }
-                result += discount.Amt;
+                else
+                {
+                    Discount discount = null;
+                    //查表取值 (_discounts)
+                    if (!_discounts.TryGetValue(pair, out discount))
+                    {
+                        throw new ArgumentException("購買數量不在設定的範圍 (1 .. 5)");
+                    }
+                    result += discount.Amt;
+                }
             }
 
             return result;
@@ -147,73 +180,5 @@ namespace PotterShoppingCart
         //計算後的金額
         public int Amt { get; set; }
     }
-
-    //public class CalculatorWithNoDiscount : ICalculator
-    //{
-    //    public int Calc(List<Order> orders)
-    //    {
-    //        return orders.Sum(x => x.Book.Price * x.Qty);
-    //    }
-    //}
-
-    //public class CalculatorWithDiscount95 : ICalculator
-    //{
-    //    public int Calc(List<Order> orders)
-    //    {
-    //        return (int)Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.95m);
-    //    }
-    //}
-
-    //public class CalculatorWithDiscount90 : ICalculator
-    //{
-    //    public int Calc(List<Order> orders)
-    //    {
-    //        return (int)Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.9m);
-    //    }
-    //}
-
-    //public class CalculatorWithDiscount80 : ICalculator
-    //{
-    //    public int Calc(List<Order> orders)
-    //    {
-    //        return (int)Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.8m);
-    //    }
-    //}
-
-    //public class CalculatorWithDiscount75 : ICalculator
-    //{
-    //    public int Calc(List<Order> orders)
-    //    {
-    //        return (int)Math.Floor(orders.Sum(x => x.Book.Price * x.Qty) * 0.75m);
-    //    }
-    //}
-
-    //public static class ShoppingFactory
-    //{
-    //    public static ICalculator GetCalculator(int booksCnt)
-    //    {
-    //        ICalculator result = null;
-    //        switch (booksCnt)
-    //        {
-    //            case 5:
-    //                result = new CalculatorWithDiscount75();
-    //                break;
-    //            case 4:
-    //                result = new CalculatorWithDiscount80();
-    //                break;
-    //            case 3:
-    //                result = new CalculatorWithDiscount90();
-    //                break;
-    //            case 2:
-    //                result = new CalculatorWithDiscount95();
-    //                break;
-    //            default:
-    //                result = new CalculatorWithNoDiscount();
-    //                break;
-    //        }
-    //        return result;
-    //    }
-    //}
-
 
 }

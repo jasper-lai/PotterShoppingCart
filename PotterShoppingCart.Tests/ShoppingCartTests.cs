@@ -167,7 +167,44 @@ namespace PotterShoppingCart.Tests
         /// 例如: 第1集買了1本, 第2集買了2本, 第3集買了4本 ==> 100*3*.9 + 100*2*.95 + 100*2 = 
         /// </remarks>
         [TestMethod]
-        public void Scenario_8_第一集買了一本_第二集買了兩本_第三集買了四本_價格應為660()
+        public void Scenario_8_第一集買了兩本_價格應為200()
+        {
+            //arrange
+            List<Order> orders = new List<Order>()
+            {
+                new Order { Book = new Book() {VolNo = 1}, Qty = 2},
+            };
+
+            //act
+            var target = new ShoppingCart();
+            int actual = target.CalcAmt(orders);
+
+            //assert
+            int expected = 200;     // 100*2*1 = 200
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Scenario_9_第一集買了一本_第二集買了三本_價格應為390()
+        {
+            //arrange
+            List<Order> orders = new List<Order>()
+            {
+                new Order { Book = new Book() {VolNo = 1}, Qty = 1},
+                new Order { Book = new Book() {VolNo = 1}, Qty = 3},
+            };
+
+            //act
+            var target = new ShoppingCart();
+            int actual = target.CalcAmt(orders);
+
+            //assert
+            int expected = 390;     // 100*2*.95 + 100*2 = 390
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Scenario_10_第一集買了一本_第二集買了兩本_第三集買了四本_價格應為660()
         {
             //arrange
             List<Order> orders = new List<Order>()
