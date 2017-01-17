@@ -57,17 +57,20 @@ namespace PotterShoppingCart
                 bookCnts.Add(order.Qty);
             }
 
-            int remainCnt = 0;
-
             while (true)
             {
                 int i = 0;
                 int currentCnt = 0;
+                int remainCnt = 0;
                 foreach (var order in orders)
                 {
-                    currentCnt = currentCnt + 1;
-                    remainCnt = remainCnt + order.Qty - 1;
-                    bookCnts[i] = bookCnts[i] - 1;
+                    //因為經過一輪彙整後, bookCnts 的元素內容, 有可能成為 0
+                    if (bookCnts[i] > 0 )
+                    {
+                        currentCnt = currentCnt + 1;
+                        remainCnt = remainCnt + bookCnts[i] - 1;
+                        bookCnts[i] = bookCnts[i] - 1;
+                    }
                     i++;
                 }
 
