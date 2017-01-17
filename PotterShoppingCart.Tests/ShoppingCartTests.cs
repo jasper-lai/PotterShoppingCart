@@ -158,7 +158,7 @@ namespace PotterShoppingCart.Tests
         }
 
         /// <summary>
-        /// Scenario_8_第一集買了一本_第二集買了兩本_第三集買了四本_價格應為660
+        /// Scenario_8_第一集買了兩本_價格應為200
         /// </summary>
         /// <remarks>
         /// 自行新增的測試案例: 假設最後剩下的數量, 是同一集, 那就不打折
@@ -184,6 +184,15 @@ namespace PotterShoppingCart.Tests
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Scenario_9_第一集買了一本_第二集買了三本_價格應為390
+        /// </summary>
+        /// <remarks>
+        /// 自行新增的測試案例: 假設最後剩下的數量, 是同一集, 那就不打折
+        /// 例如: 第1集買了2本 ==> 100*2 = 200
+        /// 例如: 第1集買了1本, 第2集買了3本 ==> 100*2*.95 + 100*2 = 390
+        /// 例如: 第1集買了1本, 第2集買了2本, 第3集買了4本 ==> 100*3*.9 + 100*2*.95 + 100*2 = 
+        /// </remarks>
         [TestMethod]
         public void Scenario_9_第一集買了一本_第二集買了三本_價格應為390()
         {
@@ -203,6 +212,15 @@ namespace PotterShoppingCart.Tests
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Scenario_10_第一集買了一本_第二集買了兩本_第三集買了四本_價格應為660
+        /// </summary>
+        /// <remarks>
+        /// 自行新增的測試案例: 假設最後剩下的數量, 是同一集, 那就不打折
+        /// 例如: 第1集買了2本 ==> 100*2 = 200
+        /// 例如: 第1集買了1本, 第2集買了3本 ==> 100*2*.95 + 100*2 = 390
+        /// 例如: 第1集買了1本, 第2集買了2本, 第3集買了4本 ==> 100*3*.9 + 100*2*.95 + 100*2 = 
+        /// </remarks>
         [TestMethod]
         public void Scenario_10_第一集買了一本_第二集買了兩本_第三集買了四本_價格應為660()
         {
