@@ -33,6 +33,9 @@ namespace PotterShoppingCart
         /// 例如5: 第1, 2, 3, 4, 5集各買1本, 應回傳 [5]
         /// 例如6: 第1集買1本, 第2集買1本, 第3集買2本, 應回傳 [3, 1]
         /// 例如7: 第1集買1本, 第2集買2本, 第3集買2本, 應回傳 [3, 2]
+        /// 例如8: 第1集買2本, 應回傳 [1, 1]
+        /// 例如9: 第1集買1本, 第2集買3本, 應回傳 [2, 1, 1]
+        /// 例如10: 第1集買1本, 第2集買2本, 第3集買4本, 應回傳 [3, 2, 1, 1]
         /// </summary>
         /// <param name="orders"></param>
         /// <returns>配對結果</returns>
@@ -79,7 +82,12 @@ namespace PotterShoppingCart
                 //檢查剩下只有 1 個元素是大於 0 的狀況, 視為結束
                 if (bookCnts.Count(x => x > 0) == 1)
                 {
-                    results.Add(bookCnts.Single(x => x > 0));
+                    //改寫處理單本的作法
+                    //results.Add(bookCnts.Single(x => x > 0));
+                    for (int k = 0; k < remainCnt; k++)
+                    {
+                        results.Add(1);
+                    }
                     break;
                 }
 
@@ -94,56 +102,21 @@ namespace PotterShoppingCart
             return results;
         }
 
-        private bool CheckFinalIsSameVolumn(List<Order> orders)
-        {
-            bool result = false;
-
-            //檢查配對結果的最後一個數字, 是否為 "同一集"
-            var tmpOrders = orders.OrderByDescending(x => x.Qty).ToList();
-
-            //最大值 - 次大值 大於或等於 2, 檢查配對結果的最後一個數字, 是 "同一集" --> 不打折
-            if ((tmpOrders[0].Qty - tmpOrders[1].Qty) >= 2)
-            {
-                result = true;
-            }
-
-            return result;
-        }
-
         public int CalcAmt(List<Order> orders)
         {
             int result = 0;
 
-            //如果只有1筆訂單項目, 代表沒有打折的可能, 直接回傳結果
-            if (orders.Count == 1)
-            {
-                result = orders.Sum(x => x.Book.Price * x.Qty);
-                return result;
-            }
-
-            //如果大於1筆訂單項目, 才有打折配對的必要
+            //執行套裝配對
             List<int> pairs = MakePairs(orders);
-            bool isSameVolumn = CheckFinalIsSameVolumn(orders);
-            int i = 0;
-            int pairsCnt = pairs.Count;
             foreach (var pair in pairs)
             {
-                i++;
-                //處理最後一個配對值的狀況
-                if (i == pairsCnt && isSameVolumn)
+                //查表取值 (_discounts)
+                Discount discount = null;
+                if (!_discounts.TryGetValue(pair, out discount))
                 {
-                    result += 100 * pair;
+                    throw new ArgumentException("購買數量不在設定的範圍 (1 .. 5)");
                 }
-                else
-                {
-                    Discount discount = null;
-                    //查表取值 (_discounts)
-                    if (!_discounts.TryGetValue(pair, out discount))
-                    {
-                        throw new ArgumentException("購買數量不在設定的範圍 (1 .. 5)");
-                    }
-                    result += discount.Amt;
-                }
+                result += discount.Amt;
             }
 
             return result;
